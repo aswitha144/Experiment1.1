@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Advanced Scientific Calculator</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background: #222;
+    color: #eee;
+    margin: 20px;
+  }
+  .calculator {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+    box-shadow: 0 0 20px #000;
+  }
+  input[type="text"] {
+    width: 100%;
+    font-size: 2rem;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background: #000;
+    color: #0f0;
+    text-align: right;
+  }
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  button {
+    padding: 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    background: #555;
+    color: #eee;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+  }
+  button:hover {
+    background: #0a0;
+  }
+  button.operator {
+    background: #0a0;
+    color: #fff;
+  }
+  button.clear {
+    background: #a00;
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <input type="text" id="display" disabled placeholder="0" />
+  <div class="buttons">
+    <button class="clear" onclick="clearDisplay()">C</button>
+    <button onclick="backspace()">⌫</button>
+    <button onclick="appendOperator('(')">(</button>
+    <button onclick="appendOperator(')')">)</button>
+    <button class="operator" onclick="appendOperator('/')">÷</button>
+
+    <button onclick="appendNumber('7')">7</button>
+    <button onclick="appendNumber('8')">8</button>
+    <button onclick="appendNumber('9')">9</button>
+    <button class="operator" onclick="appendOperator('*')">×</button>
+    <button class="operator" onclick="appendFunction('Math.sqrt')">√</button>
+
+    <button onclick="appendNumber('4')">4</button>
+    <button onclick="appendNumber('5')">5</button>
+    <button onclick="appendNumber('6')">6</button>
+    <button class="operator" onclick="appendOperator('-')">−</button>
+    <button class="operator" onclick="appendFunction('Math.log10')">log</button>
+
+    <button onclick="appendNumber('1')">1</button>
+    <button onclick="appendNumber('2')">2</button>
+    <button onclick="appendNumber('3')">3</button>
+    <button class="operator" onclick="appendOperator('+')">+</button>
+    <button class="operator" onclick="appendFunction('Math.log')">ln</button>
+
+    <button onclick="appendNumber('0')">0</button>
+    <button onclick="appendOperator('.')">.</button>
+    <button onclick="appendOperator('^')">^</button>
+    <button class="operator" onclick="appendFunction('Math.sin')">sin</button>
+    <button class="operator" onclick="appendFunction('Math.cos')">cos</button>
+
+    <button class="operator" onclick="appendFunction('Math.tan')">tan</button>
+    <button class="operator" onclick="appendOperator('Math.PI')">π</button>
+    <button class="operator" onclick="appendOperator('Math.E')">e</button>
+    <button class="operator" onclick="calculate()">=</button>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  
+  function appendNumber(num) {
+    if (display.value === '0' || display.value === '') {
+      display.value = num;
+    } else {
+      display.value += num;
+    }
+  }
+
+  function appendOperator(op) {
+    // For constants like Math.PI and Math.E, add as is
+    if (op === 'Math.PI' || op === 'Math.E') {
+      display.value += op;
+    } else {
+      display.value += op;
+    }
+  }
+
+  function appendFunction(func) {
+    display.value += func + '(';
+  }
+
+  function clearDisplay() {
+    display.value = '';
+  }
+
+  function backspace() {
+    display.value = display.value.slice(0, -1);
+  }
+
+  function calculate() {
+    try {
+      // Replace '^' with '**' for exponentiation
+      let expression = display.value.replace(/\^/g, '**');
+
+      // For math functions without Math prefix entered by users (optional fix)
+      // Evaluate expression using Function constructor for safety
+      let result = Function('"use strict";return (' + expression + ')')();
+      
+      if (typeof result === 'number' && !isNaN(result)) {
+        display.value = result;
+      } else {
+        display.value = 'Error';
+      }
+    } catch (e) {
+      display.value = 'Error';
+    }
+  }
+</script>
+
+</body>
+</html>
